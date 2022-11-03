@@ -17,15 +17,22 @@ function AddTodo({ setTodoList, handleAddTodo }) {
   };
 
   return (
-    <form>
+    <form className={styles.form}>
       <input
         type='text'
         name='name'
         placeholder='할 일을 입력해 주세요.'
         value={todo}
         onChange={handleInputChange}
+        className={styles.input}
       />
-      <button type='submit' onClick={handleSubmit}>추가</button>
+      <button
+        type='submit'
+        onClick={handleSubmit}
+        className={styles.button}
+      >
+        추가
+      </button>
     </form>
   )
 }
