@@ -1,29 +1,35 @@
 import React, { useState } from 'react'
 import AddTodo from '../AddTodo/AddTodo'
-import TodoList from '../TodoList/TodoList'
+import Todo from '../Todo/Todo'
 import TodoNav from '../TodoNav/TodoNav'
 import styles from './TodoContainer.module.css'
 
 function TodoContainer() {
-  const [todoList, setTodoList] = useState([{
-    id: '1',
-    name: 'test1',
-    isCompleted: false,
-  }, {
-    id: '2',
-    name: 'test2',
-    isCompleted: false,
-  }]);
+  const [todoList, setTodoList] = useState([]);
 
-  const handleAddTodo = (todo) => {
-    console.log(todo);
-    setTodoList([...todoList, todo]);
-  };
+  const handleAddTodo = (todo) => setTodoList([...todoList, todo]);
+  const handleUpdateTodo = (updatedTodo) =>
+    setTodoList(todoList.map((todo) => todo.id === updatedTodo.id ? updatedTodo : todo));
+
+  const handleDeleteTodo = (deletedTodo) =>
+    setTodoList(todoList.filter((todo) => todo.id !== deletedTodo.id));
 
   return (
     <section className={styles.container}>
       <TodoNav />
-      <TodoList todoList={todoList} />
+      <ul>
+        {todoList.length > 0 ? todoList.map((todo) =>
+          <Todo
+            todo={todo}
+            key={todo.id}
+            onUpdateTodo={handleUpdateTodo}
+            onDeleteTodo={handleDeleteTodo}
+          />
+        )
+          :
+          <div>입력해주세요</div>
+        }
+      </ul>
       <AddTodo handleAddTodo={handleAddTodo} />
     </section>
   )
