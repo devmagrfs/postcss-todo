@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import AddTodo from '../AddTodo/AddTodo'
 import Todo from '../Todo/Todo'
-import TodoNav from '../TodoNav/TodoNav'
+import TodoHeader from '../TodoHeader/TodoHeader'
 import styles from './TodoContainer.module.css'
 
 const filters = ['All', 'Active', 'Completed'];
@@ -19,12 +19,12 @@ function TodoContainer() {
 
   return (
     <section className={styles.container}>
-      <TodoNav
+      <TodoHeader
         filters={filters}
         filter={filter}
         onFilterChange={setFilter}
       />
-      <ul>
+      <ul className={styles.list}>
         {todoList.length > 0 ? filtered.map((todo) =>
           <Todo
             todo={todo}
