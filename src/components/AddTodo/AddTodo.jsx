@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { v4 as uuidv4 } from 'uuid';
 import styles from './AddTodo.module.css';
 
 function AddTodo({ setTodoList, handleAddTodo }) {
@@ -11,7 +12,7 @@ function AddTodo({ setTodoList, handleAddTodo }) {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (todo.trim().length === 0) return;
-    handleAddTodo({ id: '..', name: todo, isCompleted: false });
+    handleAddTodo({ id: uuidv4(), name: todo, isCompleted: false });
     setTodo('');
   };
 
