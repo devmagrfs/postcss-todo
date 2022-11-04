@@ -1,9 +1,13 @@
+import React from 'react';
 import './App.css';
 import TodoContainer from './components/TodoContainer/TodoContainer';
+import { DarkModeProvider } from './context/DarkModeContext';
 
 function App() {
   return (
-    <TodoContainer />
+    <DarkModeProvider>
+      <TodoContainer />
+    </DarkModeProvider>
   );
 }
 
