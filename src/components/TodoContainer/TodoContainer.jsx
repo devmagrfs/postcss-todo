@@ -25,17 +25,15 @@ function TodoContainer() {
         onFilterChange={setFilter}
       />
       <ul className={styles.list}>
-        {todoList.length > 0 ? filtered.map((todo) =>
+        {filtered.length === 0 && <li className={styles.list_nothing}>할 일을 입력해주세요</li>}
+        {filtered.map((todo) =>
           <Todo
             todo={todo}
             key={todo.id}
             onUpdateTodo={handleUpdateTodo}
             onDeleteTodo={handleDeleteTodo}
           />
-        )
-          :
-          <div>할 일을 추가해주세요</div>
-        }
+        )}
       </ul>
       <AddTodo handleAddTodo={handleAddTodo} />
     </section>

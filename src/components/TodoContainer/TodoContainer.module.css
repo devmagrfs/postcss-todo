@@ -10,3 +10,12 @@
 	flex: 1 1 auto;
 	overflow-y: auto;
 }
+
+.list_nothing {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.4rem 1rem;
+	margin: 0.2rem 0;
+	color: var(--color-text);
+}
