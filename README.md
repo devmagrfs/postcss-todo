@@ -1,70 +1,66 @@
-# Getting Started with Create React App
+# PostCSS을 이용한 TODO APP
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 1. 기술 스택
+| 기술 스택 | 사용 용도 |
+| --- | --- |
+|React (CRA with yarn)|캡슐화된 컴포넌트 및 상호작용이 자주 일어나는 UI를 위한 라이브러리|
+|react-icons|아이콘 이모티콘 사용을 위한 라이브러리|
+|uuid|유일한 key값을 주기 위해 사용한 라이브러리|
 
-## Available Scripts
+<br>
 
-In the project directory, you can run:
 
-### `yarn start`
+## 2. 핵심 기능 및 로직
+### (1) tailwindCSS를 참고해서 만든 contextAPI를 이용한 다크모드 구현
+> [tailwindCSS - Dark Mode](https://tailwindcss.com/docs/dark-mode)
+- tailwindCSS에서는 최상위 html 태그에 class 이름을 부여하는 방식으로 다크모드를 구분함
+- 위 방식을 참고해서 html 태그에 class를 추가하고 localStorage에 다크모드 여부를 담아놓은걸로 구분해서 화면 UI를 변경
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```javascript
+...
+// 마운트 시 로컬스토리지 및 브라우저를 확인해서 다크모드 구분하기
+useEffect(() => {
+    const isDark = localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    setDarkMode(isDark);
+    updateDarkMode(isDark);
+  }, [])
+...
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+// 다크 모드를 핸들링 하면서 html 태그 및 로컬 스토리지에 어떤 상태인지 저장하기
+function updateDarkMode(darkMode) {
+  if (darkMode) {
+    document.documentElement.classList.add('dark');
+    localStorage.theme = 'dark';
+  } else {
+    document.documentElement.classList.remove('dark');
+    localStorage.theme = 'light';
+  }
+}
+```
 
-### `yarn test`
+<br>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `yarn build`
+### (2) 필터 기능을 통해서 해야할 일, 완료한 일, 전체를 구분 및 로컬 스토리지에 저장하기
+- All, Active, Completed 상태에 따라서 필터링 기능 구현
+- 로컬 스토리지에 상태값을 저장해서 세션이 종료되어도 할 일 리스트 보존 구현
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```javascript
+// 로컬 스토리지에서 저장되있는 할 일 리스트 불러오기
+const [todoList, setTodoList] = useState(() => readTodoListFromLocalStorage());
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+function readTodoListFromLocalStorage() {
+  const todoList = localStorage.getItem('todoList');
+  return todoList ? JSON.parse(todoList) : [];
+}
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+// 상태값에 따라서 필터링 완료된 할 일 리스트를 불러오기
+const filtered = getFilteredItems(todoList, filter);
 
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+function getFilteredItems(todoList, filter) {
+  if (filter === 'All') {
+    return todoList;
+  }
+  return todoList.filter((todo) => todo.isCompleted === (filter === 'Active' ? false : true));
+}
+```
